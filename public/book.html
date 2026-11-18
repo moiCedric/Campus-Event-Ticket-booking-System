@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Book tickets - Campus Events</title><link rel="stylesheet" href="css/style.css">
+</head><body>
+<div id="nav"></div>
+<main><div class="card narrow" style="max-width:560px">
+  <div id="event"><p class="empty">Loading event...</p></div>
+  <div id="bookBox" style="display:none">
+    <label for="qty">Number of tickets</label>
+    <input id="qty" type="number" min="1" value="1">
+    <p id="total" class="sub" style="margin-top:8px"></p>
+    <div id="msg" class="msg"></div>
+    <button class="btn" id="bookBtn">Book tickets</button>
+  </div>
+  <div id="payBox" style="display:none">
+    <h2>Booking created</h2>
+    <p id="payInfo"></p>
+    <div id="msg2" class="msg"></div>
+    <button class="btn" id="payBtn">Pay now</button>
+    <a class="btn secondary" style="background:#fff;color:#1c2333;border:1px solid #d9dee8" href="my-bookings.html">Pay later</a>
+  </div>
+</div></main>
+<script src="js/api.js"></script><script src="js/book.js"></script>
+</body></html>
