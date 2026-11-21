@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizer Dashboard | Campus Events</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-dashboard="organizer">
+
+    <nav id="nav"></nav>
+
+    <main class="container">
+        <h1>Organizer Dashboard</h1>
+        <p>Manage your events and monitor ticket bookings.</p>
+
+        <section class="stats grid">
+            <div class="card">
+                <h3>My Events</h3>
+                <p id="myEventsCount">Loading...</p>
+            </div>
+
+            <div class="card">
+                <h3>My Bookings</h3>
+                <p id="myBookingsCount">Loading...</p>
+            </div>
+        </section>
+
+        <div id="msg" class="message"></div>
+
+        <section class="card">
+            <h2>My Events</h2>
+            <div class="table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Venue</th>
+                            <th>Date</th>
+                            <th>Capacity</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="organizerEventsTable">
+                        <tr><td colspan="6">Loading events...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Bookings for My Events</h2>
+            <div class="table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Student</th>
+                            <th>Event</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="organizerBookingsTable">
+                        <tr><td colspan="6">Loading bookings...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
