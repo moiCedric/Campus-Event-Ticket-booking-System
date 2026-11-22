@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Log in - Campus Events</title><link rel="stylesheet" href="css/style.css">
+</head><body>
+<div id="nav"></div>
+<main><div class="card narrow">
+  <h1>Log in</h1>
+  <p class="sub">Welcome back.</p>
+  <form id="form">
+    <label for="email">Email</label><input id="email" type="email" required>
+    <label for="password">Password</label><input id="password" type="password" required>
+    <div id="msg" class="msg"></div>
+    <button class="btn" type="submit">Log in</button>
+  </form>
+  <p>No account yet? <a href="register.html">Register</a></p>
+</div></main>
+<script src="js/api.js"></script><script src="js/auth.js"></script>
+<script>document.getElementById('form').addEventListener('submit', login);</script>
+</body></html>

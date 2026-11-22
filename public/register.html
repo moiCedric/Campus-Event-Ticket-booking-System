@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Register - Campus Events</title><link rel="stylesheet" href="css/style.css">
+</head><body>
+<div id="nav"></div>
+<main><div class="card narrow">
+  <h1>Create an account</h1>
+  <p class="sub">Students book tickets. Organizers create events.</p>
+  <form id="form">
+    <label for="name">Full name</label><input id="name" required>
+    <label for="email">Email</label><input id="email" type="email" required>
+    <label for="password">Password</label><input id="password" type="password" minlength="6" required>
+    <label for="role">I am a</label>
+    <select id="role"><option value="student">Student</option><option value="organizer">Organizer</option></select>
+    <div id="msg" class="msg"></div>
+    <button class="btn" type="submit">Create account</button>
+  </form>
+  <p>Already registered? <a href="login.html">Log in</a></p>
+</div></main>
+<script src="js/api.js"></script><script src="js/auth.js"></script>
+<script>document.getElementById('form').addEventListener('submit', register);</script>
+</body></html>

@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | Campus Events</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body data-dashboard="admin">
+
+    <!-- Navigation -->
+    <nav id="nav"></nav>
+
+    <main class="container">
+
+        <h1>Admin Dashboard</h1>
+
+        <p>
+            Manage the Campus Event and Ticket Booking System.
+        </p>
+
+        <!-- ADMIN OVERVIEW -->
+        <section class="stats grid">
+
+            <div class="card">
+                <h3>Total Users</h3>
+                <p id="totalUsers">Loading...</p>
+            </div>
+
+            <div class="card">
+                <h3>Total Events</h3>
+                <p id="totalEvents">Loading...</p>
+            </div>
+
+            <div class="card">
+                <h3>Total Bookings</h3>
+                <p id="totalBookings">Loading...</p>
+            </div>
+
+            <div class="card">
+                <h3>Total Tickets</h3>
+                <p id="totalTickets">Loading...</p>
+            </div>
+
+        </section>
+
+
+        <!-- DASHBOARD MESSAGES -->
+        <div id="msg" class="message"></div>
+
+
+        <!-- USER MANAGEMENT -->
+        <section class="card">
+
+            <h2>All Users</h2>
+
+            <p>
+                View registered users and manage their system roles.
+            </p>
+
+            <div class="table">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role / Manage</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="usersTable">
+
+                        <tr>
+                            <td colspan="4">
+                                Loading users...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- EVENT RECORDS -->
+        <section class="card">
+
+            <h2>All Events</h2>
+
+            <p>
+                View all events registered in the system.
+            </p>
+
+            <div class="table">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Venue</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="eventsTable">
+
+                        <tr>
+                            <td colspan="4">
+                                Loading events...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- BOOKING RECORDS -->
+        <section class="card">
+
+            <h2>All Bookings</h2>
+
+            <p>
+                View booking records made by students.
+            </p>
+
+            <div class="table">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Student</th>
+                            <th>Event</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="bookingsTable">
+
+                        <tr>
+                            <td colspan="6">
+                                Loading bookings...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- JAVASCRIPT FILES -->
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+
+</body>
+
+</html>
+

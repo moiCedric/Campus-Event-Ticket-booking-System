@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard | Campus Events</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-dashboard="student">
+
+    <nav id="nav"></nav>
+
+    <main class="container">
+        <h1>Student Dashboard</h1>
+        <p>Discover campus events and manage your bookings.</p>
+
+        <section class="stats grid">
+            <div class="card">
+                <h3>Available Events</h3>
+                <p id="availableEventsCount">Loading...</p>
+            </div>
+
+            <div class="card">
+                <h3>My Bookings</h3>
+                <p id="studentBookingsCount">Loading...</p>
+            </div>
+        </section>
+
+        <div id="msg" class="message"></div>
+
+        <section class="card">
+            <h2>Available Events</h2>
+            <p>Browse published events available for booking.</p>
+
+            <div id="studentEvents" class="grid">
+                Loading events...
+            </div>
+
+            <p><a href="events.html">View all events</a></p>
+        </section>
+
+        <section class="card">
+            <h2>My Bookings</h2>
+
+            <div class="table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Event</th>
+                            <th>Date</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="studentBookingsTable">
+                        <tr>
+                            <td colspan="7">Loading bookings...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>My Tickets</h2>
+            <p>Your ticket numbers will appear here after successful payment.</p>
+
+            <div class="table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ticket Number</th>
+                            <th>Event</th>
+                            <th>Date</th>
+                            <th>Venue</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="studentTicketsTable">
+                        <tr>
+                            <td colspan="5">Loading tickets...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+
+</body>
+</html>
+
