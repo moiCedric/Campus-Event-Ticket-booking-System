@@ -13,7 +13,6 @@
 
 <body data-dashboard="admin">
 
-    <!-- Navigation -->
     <nav id="nav"></nav>
 
     <main class="container">
@@ -49,10 +48,8 @@
 
         </section>
 
-
         <!-- DASHBOARD MESSAGES -->
         <div id="msg" class="message"></div>
-
 
         <!-- USER MANAGEMENT -->
         <section class="card">
@@ -63,6 +60,47 @@
                 View registered users and manage their system roles.
             </p>
 
+            <!-- ADD NEW USER FORM -->
+            <form id="addUserForm" class="card">
+
+                <h3>Add New User</h3>
+
+                <label for="newUserName">Full Name</label>
+                <input
+                    type="text"
+                    id="newUserName"
+                    placeholder="Enter full name"
+                    required
+                >
+
+                <label for="newUserEmail">Email</label>
+                <input
+                    type="email"
+                    id="newUserEmail"
+                    placeholder="Enter email address"
+                    required
+                >
+
+                <label for="newUserPassword">Password</label>
+                <input
+                    type="password"
+                    id="newUserPassword"
+                    placeholder="Minimum 8 characters"
+                    minlength="8"
+                    required
+                >
+
+                <label for="newUserRole">User Role</label>
+                <select id="newUserRole" required>
+                    <option value="student">Student</option>
+                    <option value="organizer">Organizer</option>
+                </select>
+
+                <button type="submit">Add User</button>
+
+            </form>
+
+            <!-- USERS TABLE -->
             <div class="table">
 
                 <table>
@@ -91,7 +129,6 @@
             </div>
 
         </section>
-
 
         <!-- EVENT RECORDS -->
         <section class="card">
@@ -130,7 +167,6 @@
             </div>
 
         </section>
-
 
         <!-- BOOKING RECORDS -->
         <section class="card">
@@ -174,12 +210,9 @@
 
     </main>
 
-
     <!-- JAVASCRIPT FILES -->
     <script src="js/api.js"></script>
     <script src="js/dashboard.js"></script>
 
 </body>
-
 </html>
-

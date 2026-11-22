@@ -71,6 +71,8 @@ function statusTag(status) {
 // ADMIN DASHBOARD
 // ===============================
 
+let adminUsers = [];
+
 async function loadAdminDashboard() {
     try {
         const [overviewData, usersData, eventsData, bookingsData] =
@@ -84,6 +86,8 @@ async function loadAdminDashboard() {
         const users = getArray(usersData);
         const events = getArray(eventsData);
         const bookings = getArray(bookingsData);
+
+        adminUsers = users;
 
         const overview = overviewData?.data || overviewData || {};
 
@@ -107,51 +111,14 @@ async function loadAdminDashboard() {
             overview.tickets ?? overview.totalTickets ?? "N/A"
         );
 
-        // USERS TABLE WITH ROLE MANAGEMENT
-        const usersTable = document.getElementById("usersTable");
+        // USERS TABLE WITH SEARCH AND USER MANAGEMENT
 
-        if (usersTable) {
-            usersTable.innerHTML = users.length
-                ? users.map(user => `
-                    <tr>
-                        <td>${escapeHTML(user.id)}</td>
-                        <td>${escapeHTML(user.name)}</td>
-                        <td>${escapeHTML(user.email)}</td>
-                        <td>
-                            <select
-                                class="user-role-select"
-                                data-id="${escapeHTML(user.id)}"
-                            >
-                                <option value="student"
-                                    ${user.role === "student" ? "selected" : ""}>
-                                    Student
-                                </option>
-
-                                <option value="organizer"
-                                    ${user.role === "organizer" ? "selected" : ""}>
-                                    Organizer
-                                </option>
-
-                                <option value="admin"
-                                    ${user.role === "admin" ? "selected" : ""}>
-                                    Admin
-                                </option>
-                            </select>
-
-                            <button
-                                type="button"
-                                class="update-user-role-button"
-                                data-id="${escapeHTML(user.id)}"
-                            >
-                                Update Role
-                            </button>
-                        </td>
-                    </tr>
-                `).join("")
-                : `<tr><td colspan="4">No users found.</td></tr>`;
-        }
+        renderAdminUsers(
+            document.getElementById("adminUserSearch")?.value || ""
+        );
 
         // EVENTS TABLE
+
         const eventsTable = document.getElementById("eventsTable");
 
         if (eventsTable) {
@@ -168,6 +135,7 @@ async function loadAdminDashboard() {
         }
 
         // BOOKINGS TABLE
+
         const bookingsTable = document.getElementById("bookingsTable");
 
         if (bookingsTable) {
@@ -195,6 +163,107 @@ async function loadAdminDashboard() {
 
 
 // ===============================
+// DISPLAY AND SEARCH ADMIN USERS
+// ===============================
+
+function renderAdminUsers(searchTerm = "") {
+    const usersTable = document.getElementById("usersTable");
+
+    if (!usersTable) return;
+
+    const search = searchTerm.toLowerCase().trim();
+
+    const filteredUsers = adminUsers.filter(user =>
+        String(user.name || "").toLowerCase().includes(search) ||
+        String(user.email || "").toLowerCase().includes(search)
+    );
+
+    usersTable.innerHTML = filteredUsers.length
+        ? filteredUsers.map(user => `
+            <tr>
+                <td>${escapeHTML(user.id)}</td>
+
+                <td>${escapeHTML(user.name)}</td>
+
+                <td>${escapeHTML(user.email)}</td>
+
+                <td>
+                    <select
+                        class="user-role-select"
+                        data-id="${escapeHTML(user.id)}"
+                    >
+                        <option value="student"
+                            ${user.role === "student" ? "selected" : ""}>
+                            Student
+                        </option>
+
+                        <option value="organizer"
+                            ${user.role === "organizer" ? "selected" : ""}>
+                            Organizer
+                        </option>
+
+                        <option value="admin"
+                            ${user.role === "admin" ? "selected" : ""}>
+                            Admin
+                        </option>
+                    </select>
+
+                    <button
+                        type="button"
+                        class="update-user-role-button"
+                        data-id="${escapeHTML(user.id)}"
+                    >
+                        Update Role
+                    </button>
+
+                    <button
+                        type="button"
+                        class="remove-user-button"
+                        data-id="${escapeHTML(user.id)}"
+                    >
+                        Remove
+                    </button>
+                </td>
+            </tr>
+        `).join("")
+        : `<tr><td colspan="4">No matching users found.</td></tr>`;
+}
+
+
+// ===============================
+// ADMIN USER SEARCH
+// ===============================
+
+function setupAdminUserSearch() {
+    const usersTable = document.getElementById("usersTable");
+
+    if (!usersTable) return;
+
+    if (document.getElementById("adminUserSearch")) return;
+
+    const searchInput = document.createElement("input");
+
+    searchInput.type = "search";
+    searchInput.id = "adminUserSearch";
+    searchInput.placeholder = "Search users by name or email...";
+    searchInput.style.width = "100%";
+    searchInput.style.maxWidth = "400px";
+    searchInput.style.padding = "12px";
+    searchInput.style.marginBottom = "15px";
+
+    const table = usersTable.closest("table");
+
+    if (table && table.parentNode) {
+        table.parentNode.insertBefore(searchInput, table);
+    }
+
+    searchInput.addEventListener("input", function () {
+        renderAdminUsers(searchInput.value);
+    });
+}
+
+
+// ===============================
 // ADMIN USER MANAGEMENT
 // ===============================
 
@@ -204,50 +273,168 @@ function setupAdminUserManagement() {
     if (!table) return;
 
     table.addEventListener("click", async function (e) {
-        const button = e.target.closest(".update-user-role-button");
 
-        if (!button) return;
+        // UPDATE USER ROLE
 
-        const userId = button.dataset.id;
-
-        const select = table.querySelector(
-            `.user-role-select[data-id="${userId}"]`
+        const updateButton = e.target.closest(
+            ".update-user-role-button"
         );
 
-        if (!select) return;
+        if (updateButton) {
+            const userId = updateButton.dataset.id;
 
-        const newRole = select.value;
+            const select = table.querySelector(
+                `.user-role-select[data-id="${userId}"]`
+            );
 
-        const confirmed = confirm(
-            `Change this user's role to ${newRole}?`
+            if (!select) return;
+
+            const newRole = select.value;
+
+            const confirmed = confirm(
+                `Change this user's role to ${newRole}?`
+            );
+
+            if (!confirmed) return;
+
+            try {
+                updateButton.disabled = true;
+                updateButton.textContent = "Updating...";
+
+                const response = await api(
+                    `/admin/users/${userId}/role`,
+                    "PATCH",
+                    { role: newRole }
+                );
+
+                showDashboardMessage(
+                    response.message || "User role updated successfully!",
+                    false
+                );
+
+                await loadAdminDashboard();
+
+            } catch (error) {
+                console.error("Update user role error:", error);
+                showDashboardMessage(error.message);
+
+            } finally {
+                updateButton.disabled = false;
+                updateButton.textContent = "Update Role";
+            }
+
+            return;
+        }
+
+        // REMOVE USER
+
+        const removeButton = e.target.closest(
+            ".remove-user-button"
         );
 
-        if (!confirmed) return;
+        if (removeButton) {
+            const userId = removeButton.dataset.id;
+
+            const user = adminUsers.find(
+                item => String(item.id) === String(userId)
+            );
+
+            if (!user) {
+                showDashboardMessage("User not found.");
+                return;
+            }
+
+            const confirmed = confirm(
+                `Are you sure you want to remove ${user.name} (${user.email})?`
+            );
+
+            if (!confirmed) return;
+
+            try {
+                removeButton.disabled = true;
+                removeButton.textContent = "Removing...";
+
+                const response = await api(
+                    `/admin/users/${userId}`,
+                    "DELETE"
+                );
+
+                showDashboardMessage(
+                    response.message || "User removed successfully!",
+                    false
+                );
+
+                await loadAdminDashboard();
+
+            } catch (error) {
+                console.error("Remove user error:", error);
+                showDashboardMessage(error.message);
+
+                removeButton.disabled = false;
+                removeButton.textContent = "Remove";
+            }
+        }
+    });
+}
+
+
+// ===============================
+// ADMIN ADD USER
+// ===============================
+
+function setupAdminAddUserForm() {
+    const form = document.getElementById("addUserForm");
+
+    if (!form) return;
+
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const button = form.querySelector('button[type="submit"]');
+
+        const userData = {
+            name: document.getElementById("newUserName").value.trim(),
+            email: document.getElementById("newUserEmail").value.trim(),
+            password: document.getElementById("newUserPassword").value,
+            role: document.getElementById("newUserRole").value
+        };
+
+        if (!userData.name || !userData.email || !userData.password) {
+            showDashboardMessage("Please complete all user fields.");
+            return;
+        }
+
+        if (userData.password.length < 8) {
+            showDashboardMessage("Password must contain at least 8 characters.");
+            return;
+        }
 
         try {
             button.disabled = true;
-            button.textContent = "Updating...";
+            button.textContent = "Adding User...";
 
             const response = await api(
-                `/admin/users/${userId}/role`,
-                "PATCH",
-                { role: newRole }
+                "/admin/users",
+                "POST",
+                userData
             );
 
             showDashboardMessage(
-                response.message || "User role updated successfully!",
+                response.message || "User added successfully!",
                 false
             );
+
+            form.reset();
 
             await loadAdminDashboard();
 
         } catch (error) {
-            console.error("Update user role error:", error);
+            console.error("Add user error:", error);
             showDashboardMessage(error.message);
 
         } finally {
             button.disabled = false;
-            button.textContent = "Update Role";
+            button.textContent = "Add User";
         }
     });
 }
@@ -344,6 +531,7 @@ function setupCreateEventForm() {
 // ===============================
 
 let organizerEvents = [];
+let organizerBookings = [];
 
 async function loadOrganizerDashboard() {
     try {
@@ -356,6 +544,7 @@ async function loadOrganizerDashboard() {
         const bookings = getArray(bookingsData);
 
         organizerEvents = events;
+        organizerBookings = bookings;
 
         setText("myEventsCount", events.length);
         setText("myBookingsCount", bookings.length);
@@ -405,6 +594,8 @@ async function loadOrganizerDashboard() {
                 : `<tr><td colspan="7">You have not created any events yet.</td></tr>`;
         }
 
+        // ORGANIZER BOOKINGS TABLE
+
         const bookingsTable =
             document.getElementById("organizerBookingsTable");
 
@@ -414,20 +605,101 @@ async function loadOrganizerDashboard() {
                     <tr>
                         <td>${escapeHTML(booking.id)}</td>
                         <td>${escapeHTML(
-                            booking.user_name || booking.student_name || "Student"
+                            booking.student_name || "Student"
                         )}</td>
                         <td>${escapeHTML(booking.event_title || "Event")}</td>
                         <td>${escapeHTML(booking.quantity)}</td>
                         <td>${formatMoney(booking.total_amount)}</td>
                         <td>${statusTag(booking.status)}</td>
+                        <td>
+                            <button type="button"
+                                class="view-booking-details"
+                                data-id="${escapeHTML(booking.id)}">
+                                View Details
+                            </button>
+                        </td>
                     </tr>
                 `).join("")
-                : `<tr><td colspan="6">No bookings for your events yet.</td></tr>`;
+                : `<tr><td colspan="7">No bookings for your events yet.</td></tr>`;
         }
 
     } catch (error) {
         console.error("Organizer dashboard error:", error);
         showDashboardMessage(error.message);
+    }
+}
+
+
+// ===============================
+// ORGANIZER BOOKING DETAILS
+// ===============================
+
+function setupOrganizerBookingDetails() {
+    const table = document.getElementById("organizerBookingsTable");
+    const details = document.getElementById("bookingDetails");
+    const content = document.getElementById("bookingDetailsContent");
+    const closeButton = document.getElementById("closeBookingDetails");
+
+    if (!table || !details || !content) return;
+
+    table.addEventListener("click", function (e) {
+        const button = e.target.closest(".view-booking-details");
+
+        if (!button) return;
+
+        const booking = organizerBookings.find(
+            item => String(item.id) === String(button.dataset.id)
+        );
+
+        if (!booking) {
+            showDashboardMessage("Booking details could not be found.");
+            return;
+        }
+
+        content.innerHTML = `
+            <p><strong>Booking ID:</strong>
+                ${escapeHTML(booking.id)}</p>
+
+            <p><strong>Student Name:</strong>
+                ${escapeHTML(booking.student_name || "Not available")}</p>
+
+            <p><strong>Student Email:</strong>
+                ${escapeHTML(booking.student_email || "Not available")}</p>
+
+            <p><strong>Event:</strong>
+                ${escapeHTML(booking.event_title || "Not available")}</p>
+
+            <p><strong>Venue:</strong>
+                ${escapeHTML(booking.venue || "Not specified")}</p>
+
+            <p><strong>Event Date:</strong>
+                ${formatDate(booking.event_date)}</p>
+
+            <p><strong>Tickets Booked:</strong>
+                ${escapeHTML(booking.quantity)}</p>
+
+            <p><strong>Total Amount:</strong>
+                ${formatMoney(booking.total_amount)}</p>
+
+            <p><strong>Payment Status:</strong>
+                ${statusTag(booking.status)}</p>
+
+            <p><strong>Booking Date:</strong>
+                ${formatDate(booking.created_at)}</p>
+        `;
+
+        details.hidden = false;
+
+        details.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    });
+
+    if (closeButton) {
+        closeButton.addEventListener("click", function () {
+            details.hidden = true;
+        });
     }
 }
 
@@ -651,6 +923,7 @@ function setupEventActions() {
         }
 
         // EDIT EVENT
+
         if (button.classList.contains("edit-event-button")) {
             const section =
                 document.getElementById("editEventSection");
@@ -688,6 +961,7 @@ function setupEventActions() {
         }
 
         // PUBLISH EVENT
+
         if (button.classList.contains("publish-event-button")) {
             const confirmed = confirm(
                 "Are you sure you want to publish this event? Students will be able to see it."
@@ -721,6 +995,7 @@ function setupEventActions() {
         }
 
         // CANCEL EVENT
+
         if (button.classList.contains("cancel-event-button")) {
             const confirmed = confirm(
                 "Are you sure you want to cancel this event?"
@@ -775,6 +1050,7 @@ async function loadStudentDashboard() {
         setText("studentBookingsCount", bookings.length);
 
         // AVAILABLE EVENTS
+
         const eventContainer =
             document.getElementById("studentEvents");
 
@@ -805,6 +1081,7 @@ async function loadStudentDashboard() {
         }
 
         // STUDENT BOOKINGS
+
         const bookingsTable =
             document.getElementById("studentBookingsTable");
 
@@ -838,6 +1115,7 @@ async function loadStudentDashboard() {
         }
 
         // STUDENT TICKETS
+
         const ticketsTable =
             document.getElementById("studentTicketsTable");
 
@@ -932,7 +1210,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (dashboard === "admin") {
         if (!Auth.require(["admin"])) return;
 
+        setupAdminUserSearch();
         setupAdminUserManagement();
+        setupAdminAddUserForm();
+
         loadAdminDashboard();
     }
 
@@ -943,6 +1224,7 @@ document.addEventListener("DOMContentLoaded", function () {
         setupEditEventForm();
         setupEventActions();
         setupTicketVerification();
+        setupOrganizerBookingDetails();
 
         loadOrganizerDashboard();
     }
@@ -954,5 +1236,3 @@ document.addEventListener("DOMContentLoaded", function () {
         loadStudentDashboard();
     }
 });
-
-
