@@ -111,13 +111,9 @@ async function loadAdminDashboard() {
             overview.tickets ?? overview.totalTickets ?? "N/A"
         );
 
-        // USERS TABLE WITH SEARCH AND USER MANAGEMENT
-
         renderAdminUsers(
             document.getElementById("adminUserSearch")?.value || ""
         );
-
-        // EVENTS TABLE
 
         const eventsTable = document.getElementById("eventsTable");
 
@@ -133,8 +129,6 @@ async function loadAdminDashboard() {
                 `).join("")
                 : `<tr><td colspan="4">No events found.</td></tr>`;
         }
-
-        // BOOKINGS TABLE
 
         const bookingsTable = document.getElementById("bookingsTable");
 
@@ -182,11 +176,8 @@ function renderAdminUsers(searchTerm = "") {
         ? filteredUsers.map(user => `
             <tr>
                 <td>${escapeHTML(user.id)}</td>
-
                 <td>${escapeHTML(user.name)}</td>
-
                 <td>${escapeHTML(user.email)}</td>
-
                 <td>
                     <select
                         class="user-role-select"
@@ -274,8 +265,6 @@ function setupAdminUserManagement() {
 
     table.addEventListener("click", async function (e) {
 
-        // UPDATE USER ROLE
-
         const updateButton = e.target.closest(
             ".update-user-role-button"
         );
@@ -325,8 +314,6 @@ function setupAdminUserManagement() {
 
             return;
         }
-
-        // REMOVE USER
 
         const removeButton = e.target.closest(
             ".remove-user-button"
@@ -437,6 +424,168 @@ function setupAdminAddUserForm() {
             button.textContent = "Add User";
         }
     });
+}
+
+
+// ===============================
+// ADMIN GENERATE REPORT
+// ===============================
+
+function setupAdminReports() {
+    const generateButton = document.getElementById("generateReportBtn");
+    const printButton = document.getElementById("printReportBtn");
+
+    const reportContainer = document.getElementById("reportContainer");
+    const reportMessage = document.getElementById("reportMessage");
+
+    if (!generateButton || !reportContainer) return;
+
+    generateButton.addEventListener("click", async function () {
+        try {
+            generateButton.disabled = true;
+            generateButton.textContent = "Generating Report...";
+
+            if (reportMessage) {
+                reportMessage.textContent = "";
+            }
+
+            const response = await api("/admin/reports");
+            const report = response?.data || response;
+            const summary = report.summary || {};
+
+            setText("reportTotalUsers", summary.totalUsers ?? 0);
+            setText("reportTotalEvents", summary.totalEvents ?? 0);
+            setText("reportTotalBookings", summary.totalBookings ?? 0);
+            setText("reportTotalTickets", summary.totalTickets ?? 0);
+
+            setText(
+                "reportGeneratedAt",
+                "Generated: " + formatDate(report.generatedAt)
+            );
+
+            const rolesTable = document.getElementById("reportRolesTable");
+
+            if (rolesTable) {
+                const roles = Array.isArray(report.usersByRole)
+                    ? report.usersByRole
+                    : [];
+
+                rolesTable.innerHTML = roles.length
+                    ? roles.map(item => `
+                        <tr>
+                            <td>${escapeHTML(item.role)}</td>
+                            <td>${escapeHTML(item.total)}</td>
+                        </tr>
+                    `).join("")
+                    : `<tr><td colspan="2">No user records found.</td></tr>`;
+            }
+
+            reportContainer.hidden = false;
+
+            if (reportMessage) {
+                reportMessage.textContent = "Report generated successfully!";
+                reportMessage.style.color = "#15803d";
+            }
+
+            reportContainer.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        } catch (error) {
+            console.error("Generate report error:", error);
+
+            if (reportMessage) {
+                reportMessage.textContent =
+                    error.message || "Could not generate report.";
+                reportMessage.style.color = "#b91c1c";
+            }
+
+        } finally {
+            generateButton.disabled = false;
+            generateButton.textContent = "Generate Report";
+        }
+    });
+
+    if (printButton) {
+        printButton.addEventListener("click", function () {
+            const reportContent = document.getElementById("reportContent");
+
+            if (!reportContent) return;
+
+            const printWindow = window.open("", "_blank");
+
+            if (!printWindow) {
+                alert("Please allow pop-ups to print the report.");
+                return;
+            }
+
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Campus Events System Report</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            padding: 30px;
+                            color: #222;
+                        }
+
+                        h2, h3 {
+                            color: #1f2937;
+                        }
+
+                        .stats {
+                            display: grid;
+                            grid-template-columns: repeat(2, 1fr);
+                            gap: 15px;
+                            margin: 20px 0;
+                        }
+
+                        .card {
+                            border: 1px solid #ddd;
+                            padding: 15px;
+                            border-radius: 8px;
+                        }
+
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 15px;
+                        }
+
+                        th, td {
+                            border: 1px solid #ddd;
+                            padding: 10px;
+                            text-align: left;
+                        }
+
+                        th {
+                            background: #f2f2f2;
+                        }
+
+                        @media print {
+                            body {
+                                padding: 0;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${reportContent.innerHTML}
+                </body>
+                </html>
+            `);
+
+            printWindow.document.close();
+            printWindow.focus();
+
+            printWindow.onload = function () {
+                printWindow.print();
+            };
+        });
+    }
 }
 
 
@@ -593,8 +742,6 @@ async function loadOrganizerDashboard() {
                 `).join("")
                 : `<tr><td colspan="7">You have not created any events yet.</td></tr>`;
         }
-
-        // ORGANIZER BOOKINGS TABLE
 
         const bookingsTable =
             document.getElementById("organizerBookingsTable");
@@ -922,8 +1069,6 @@ function setupEventActions() {
             return;
         }
 
-        // EDIT EVENT
-
         if (button.classList.contains("edit-event-button")) {
             const section =
                 document.getElementById("editEventSection");
@@ -960,8 +1105,6 @@ function setupEventActions() {
             return;
         }
 
-        // PUBLISH EVENT
-
         if (button.classList.contains("publish-event-button")) {
             const confirmed = confirm(
                 "Are you sure you want to publish this event? Students will be able to see it."
@@ -993,8 +1136,6 @@ function setupEventActions() {
 
             return;
         }
-
-        // CANCEL EVENT
 
         if (button.classList.contains("cancel-event-button")) {
             const confirmed = confirm(
@@ -1049,8 +1190,6 @@ async function loadStudentDashboard() {
         setText("availableEventsCount", events.length);
         setText("studentBookingsCount", bookings.length);
 
-        // AVAILABLE EVENTS
-
         const eventContainer =
             document.getElementById("studentEvents");
 
@@ -1079,8 +1218,6 @@ async function loadStudentDashboard() {
                 `).join("")
                 : `<p>No published events are currently available.</p>`;
         }
-
-        // STUDENT BOOKINGS
 
         const bookingsTable =
             document.getElementById("studentBookingsTable");
@@ -1113,8 +1250,6 @@ async function loadStudentDashboard() {
                 `).join("")
                 : `<tr><td colspan="7">You have not made any bookings yet.</td></tr>`;
         }
-
-        // STUDENT TICKETS
 
         const ticketsTable =
             document.getElementById("studentTicketsTable");
@@ -1213,6 +1348,7 @@ document.addEventListener("DOMContentLoaded", function () {
         setupAdminUserSearch();
         setupAdminUserManagement();
         setupAdminAddUserForm();
+        setupAdminReports();
 
         loadAdminDashboard();
     }

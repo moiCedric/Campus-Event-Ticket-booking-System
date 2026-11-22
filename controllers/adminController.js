@@ -40,6 +40,52 @@ async function overview(req, res) {
   }
 }
 
+// GENERATE ADMIN REPORT
+async function generateReport(req, res) {
+  try {
+    const [users] = await pool.query(
+      "SELECT COUNT(*) AS total FROM users"
+    );
+
+    const [userRoles] = await pool.query(
+      `SELECT role, COUNT(*) AS total
+       FROM users
+       GROUP BY role`
+    );
+
+    const [events] = await pool.query(
+      "SELECT COUNT(*) AS total FROM events"
+    );
+
+    const [bookings] = await pool.query(
+      "SELECT COUNT(*) AS total FROM bookings"
+    );
+
+    const [tickets] = await pool.query(
+      "SELECT COUNT(*) AS total FROM tickets"
+    );
+
+    res.json({
+      reportTitle: "Campus Events System Report",
+      generatedAt: new Date(),
+      summary: {
+        totalUsers: users[0].total,
+        totalEvents: events[0].total,
+        totalBookings: bookings[0].total,
+        totalTickets: tickets[0].total
+      },
+      usersByRole: userRoles
+    });
+
+  } catch (err) {
+    console.error("Generate report error:", err);
+
+    res.status(500).json({
+      error: "Could not generate report"
+    });
+  }
+}
+
 // LIST ALL USERS
 async function listUsers(req, res) {
   try {
@@ -170,14 +216,12 @@ async function removeUser(req, res) {
       });
     }
 
-    // Prevent administrator from deleting their own account
     if (userId === Number(req.user.id)) {
       return res.status(400).json({
         error: "You cannot delete your own administrator account"
       });
     }
 
-    // Check whether the user exists
     const [users] = await pool.query(
       "SELECT id, name, role FROM users WHERE id = ?",
       [userId]
@@ -189,13 +233,11 @@ async function removeUser(req, res) {
       });
     }
 
-    // Check whether the user has organised any events
     const [events] = await pool.query(
       "SELECT COUNT(*) AS total FROM events WHERE organizer_id = ?",
       [userId]
     );
 
-    // Check whether the user has made any bookings
     const [bookings] = await pool.query(
       "SELECT COUNT(*) AS total FROM bookings WHERE user_id = ?",
       [userId]
@@ -213,7 +255,6 @@ async function removeUser(req, res) {
       });
     }
 
-    // Delete only the user. Do not delete tickets or booking history.
     await pool.query(
       "DELETE FROM users WHERE id = ?",
       [userId]
@@ -262,6 +303,7 @@ async function listBookings(req, res) {
 
 module.exports = {
   overview,
+  generateReport,
   listUsers,
   createUser,
   updateUserRole,
@@ -269,4 +311,3 @@ module.exports = {
   listEvents,
   listBookings
 };
-

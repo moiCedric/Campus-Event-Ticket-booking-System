@@ -208,6 +208,90 @@
 
         </section>
 
+        <!-- GENERATE REPORTS -->
+        <section class="card" id="reportsSection">
+
+            <h2>System Reports</h2>
+
+            <p>
+                Generate a report containing important system statistics
+                and user information.
+            </p>
+
+            <button type="button" id="generateReportBtn">
+                Generate Report
+            </button>
+
+            <div id="reportMessage" class="message"></div>
+
+            <!-- GENERATED REPORT -->
+            <div id="reportContainer" hidden>
+
+                <div id="reportContent">
+
+                    <h2>Campus Events System Report</h2>
+
+                    <p id="reportGeneratedAt"></p>
+
+                    <h3>System Summary</h3>
+
+                    <div class="stats grid">
+
+                        <div class="card">
+                            <h3>Total Users</h3>
+                            <p id="reportTotalUsers">0</p>
+                        </div>
+
+                        <div class="card">
+                            <h3>Total Events</h3>
+                            <p id="reportTotalEvents">0</p>
+                        </div>
+
+                        <div class="card">
+                            <h3>Total Bookings</h3>
+                            <p id="reportTotalBookings">0</p>
+                        </div>
+
+                        <div class="card">
+                            <h3>Total Tickets</h3>
+                            <p id="reportTotalTickets">0</p>
+                        </div>
+
+                    </div>
+
+                    <h3>Users by Role</h3>
+
+                    <div class="table">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>User Role</th>
+                                    <th>Total Users</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="reportRolesTable">
+                                <tr>
+                                    <td colspan="2">No report generated yet.</td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+                <button type="button" id="printReportBtn">
+                    Print / Save as PDF
+                </button>
+
+            </div>
+
+        </section>
+
     </main>
 
     <!-- JAVASCRIPT FILES -->
@@ -216,3 +300,4 @@
 
 </body>
 </html>
+
