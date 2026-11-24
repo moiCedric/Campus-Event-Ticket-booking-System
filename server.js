@@ -11,6 +11,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/bookings", bookingRoutes);
+app.use("/api/tickets", require("./routes/ticketRoutes"));
 
 app.get("/", (req, res) => {
   res.json({ message: "Campus Event & Ticket Booking API is running" });
