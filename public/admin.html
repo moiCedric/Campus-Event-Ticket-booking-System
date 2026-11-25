@@ -11,332 +11,513 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body data-dashboard="admin">
+<body data-dashboard="admin" class="admin-page">
 
+    <!-- EXISTING NAVIGATION SCRIPT TARGET -->
     <nav id="nav"></nav>
 
-    <main class="container">
+    <div class="admin-layout">
 
-        <h1>Admin Dashboard</h1>
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
 
-        <p>
-            Manage the Campus Event and Ticket Booking System.
-        </p>
-
-        <!-- ADMIN OVERVIEW -->
-        <section class="stats grid">
-
-            <div class="card">
-                <h3>Total Users</h3>
-                <p id="totalUsers">Loading...</p>
+            <div class="sidebar-brand">
+                <div class="brand-icon">CE</div>
+                <div>
+                    <strong>CampusEvents</strong>
+                    <span>Management Portal</span>
+                </div>
             </div>
 
-            <div class="card">
-                <h3>Total Events</h3>
-                <p id="totalEvents">Loading...</p>
+            <div class="sidebar-label">MAIN MENU</div>
+
+            <nav class="sidebar-menu">
+                <a href="#overview" class="sidebar-link active">
+                    <span class="sidebar-icon">▦</span>
+                    Dashboard
+                </a>
+
+                <a href="#approvals" class="sidebar-link">
+                    <span class="sidebar-icon">✓</span>
+                    Event Approvals
+                </a>
+
+                <a href="#users" class="sidebar-link">
+                    <span class="sidebar-icon">♙</span>
+                    User Management
+                </a>
+
+                <a href="#events" class="sidebar-link">
+                    <span class="sidebar-icon">▣</span>
+                    Events
+                </a>
+
+                <a href="#bookings" class="sidebar-link">
+                    <span class="sidebar-icon">▤</span>
+                    Bookings
+                </a>
+
+                <a href="#reports" class="sidebar-link">
+                    <span class="sidebar-icon">▥</span>
+                    Reports
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="sidebar-admin-card">
+                    <div class="admin-avatar">A</div>
+                    <div>
+                        <strong>Administrator</strong>
+                        <span>System Manager</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="card">
-                <h3>Total Bookings</h3>
-                <p id="totalBookings">Loading...</p>
-            </div>
+        </aside>
 
-            <div class="card">
-                <h3>Total Tickets</h3>
-                <p id="totalTickets">Loading...</p>
-            </div>
 
-        </section>
+        <!-- MAIN CONTENT -->
+        <main class="admin-content">
 
-        <!-- DASHBOARD MESSAGES -->
-        <div id="msg" class="message"></div>
+            <!-- TOP HEADER -->
+            <header class="admin-topbar">
 
-        <!-- PENDING EVENT APPROVALS -->
-        <section class="card" id="pendingApprovalsSection">
+                <div>
+                    <span class="breadcrumb">Management / Dashboard</span>
+                    <h1>Dashboard Overview</h1>
+                    <p>Monitor and manage your campus event platform.</p>
+                </div>
 
-            <h2>Pending Event Approvals</h2>
+                <div class="topbar-profile">
+                    <div class="topbar-avatar">A</div>
+                    <div>
+                        <strong>Administrator</strong>
+                        <span>System Admin</span>
+                    </div>
+                </div>
 
-            <p>
-                Review events submitted by organisers before making
-                them available to students.
-            </p>
+            </header>
 
-            <div id="pendingEventsMessage" class="message"></div>
 
-            <div class="table">
+            <!-- GLOBAL MESSAGES -->
+            <div id="msg" class="message"></div>
 
-                <table>
 
-                    <thead>
-                        <tr>
-                            <th>Event</th>
-                            <th>Organiser</th>
-                            <th>Date</th>
-                            <th>Venue</th>
-                            <th>Capacity</th>
-                            <th>Ticket Price</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
+            <!-- OVERVIEW -->
+            <section id="overview" class="admin-section">
 
-                    <tbody id="pendingEventsTable">
+                <div class="section-heading">
+                    <div>
+                        <span class="section-eyebrow">OVERVIEW</span>
+                        <h2>System Statistics</h2>
+                        <p>Here is what's happening on your platform.</p>
+                    </div>
+                </div>
 
-                        <tr>
-                            <td colspan="7">
-                                Loading pending events...
-                            </td>
-                        </tr>
 
-                    </tbody>
+                <div class="admin-stats-grid">
 
-                </table>
-
-            </div>
-
-        </section>
-
-        <!-- USER MANAGEMENT -->
-        <section class="card">
-
-            <h2>All Users</h2>
-
-            <p>
-                View registered users and manage their system roles.
-            </p>
-
-            <!-- ADD NEW USER FORM -->
-            <form id="addUserForm" class="card">
-
-                <h3>Add New User</h3>
-
-                <label for="newUserName">Full Name</label>
-                <input
-                    type="text"
-                    id="newUserName"
-                    placeholder="Enter full name"
-                    required
-                >
-
-                <label for="newUserEmail">Email</label>
-                <input
-                    type="email"
-                    id="newUserEmail"
-                    placeholder="Enter email address"
-                    required
-                >
-
-                <label for="newUserPassword">Password</label>
-                <input
-                    type="password"
-                    id="newUserPassword"
-                    placeholder="Minimum 8 characters"
-                    minlength="8"
-                    required
-                >
-
-                <label for="newUserRole">User Role</label>
-                <select id="newUserRole" required>
-                    <option value="student">Student</option>
-                    <option value="organizer">Organizer</option>
-                </select>
-
-                <button type="submit">Add User</button>
-
-            </form>
-
-            <!-- USERS TABLE -->
-            <div class="table">
-
-                <table>
-
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Role / Manage</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="usersTable">
-
-                        <tr>
-                            <td colspan="4">
-                                Loading users...
-                            </td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-        <!-- EVENT RECORDS -->
-        <section class="card">
-
-            <h2>All Events</h2>
-
-            <p>
-                View all events registered in the system.
-            </p>
-
-            <div class="table">
-
-                <table>
-
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Venue</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="eventsTable">
-
-                        <tr>
-                            <td colspan="4">
-                                Loading events...
-                            </td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-        <!-- BOOKING RECORDS -->
-        <section class="card">
-
-            <h2>All Bookings</h2>
-
-            <p>
-                View booking records made by students.
-            </p>
-
-            <div class="table">
-
-                <table>
-
-                    <thead>
-                        <tr>
-                            <th>Booking ID</th>
-                            <th>Student</th>
-                            <th>Event</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="bookingsTable">
-
-                        <tr>
-                            <td colspan="6">
-                                Loading bookings...
-                            </td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-        <!-- GENERATE REPORTS -->
-        <section class="card" id="reportsSection">
-
-            <h2>System Reports</h2>
-
-            <p>
-                Generate a report containing important system statistics
-                and user information.
-            </p>
-
-            <button type="button" id="generateReportBtn">
-                Generate Report
-            </button>
-
-            <div id="reportMessage" class="message"></div>
-
-            <!-- GENERATED REPORT -->
-            <div id="reportContainer" hidden>
-
-                <div id="reportContent">
-
-                    <h2>Campus Events System Report</h2>
-
-                    <p id="reportGeneratedAt"></p>
-
-                    <h3>System Summary</h3>
-
-                    <div class="stats grid">
-
-                        <div class="card">
-                            <h3>Total Users</h3>
-                            <p id="reportTotalUsers">0</p>
+                    <div class="admin-stat-card users-stat">
+                        <div class="stat-top">
+                            <span class="stat-icon">♙</span>
+                            <span class="stat-caption">Registered accounts</span>
                         </div>
 
-                        <div class="card">
-                            <h3>Total Events</h3>
-                            <p id="reportTotalEvents">0</p>
-                        </div>
-
-                        <div class="card">
-                            <h3>Total Bookings</h3>
-                            <p id="reportTotalBookings">0</p>
-                        </div>
-
-                        <div class="card">
-                            <h3>Total Tickets</h3>
-                            <p id="reportTotalTickets">0</p>
-                        </div>
-
+                        <h3 id="totalUsers">Loading...</h3>
+                        <p>Total Users</p>
                     </div>
 
-                    <h3>Users by Role</h3>
 
-                    <div class="table">
+                    <div class="admin-stat-card events-stat">
+                        <div class="stat-top">
+                            <span class="stat-icon">▣</span>
+                            <span class="stat-caption">Platform activities</span>
+                        </div>
 
-                        <table>
+                        <h3 id="totalEvents">Loading...</h3>
+                        <p>Total Events</p>
+                    </div>
 
-                            <thead>
-                                <tr>
-                                    <th>User Role</th>
-                                    <th>Total Users</th>
-                                </tr>
-                            </thead>
 
-                            <tbody id="reportRolesTable">
-                                <tr>
-                                    <td colspan="2">No report generated yet.</td>
-                                </tr>
-                            </tbody>
+                    <div class="admin-stat-card bookings-stat">
+                        <div class="stat-top">
+                            <span class="stat-icon">▤</span>
+                            <span class="stat-caption">Student reservations</span>
+                        </div>
 
-                        </table>
+                        <h3 id="totalBookings">Loading...</h3>
+                        <p>Total Bookings</p>
+                    </div>
 
+
+                    <div class="admin-stat-card tickets-stat">
+                        <div class="stat-top">
+                            <span class="stat-icon">▧</span>
+                            <span class="stat-caption">Generated tickets</span>
+                        </div>
+
+                        <h3 id="totalTickets">Loading...</h3>
+                        <p>Total Tickets</p>
                     </div>
 
                 </div>
 
-                <button type="button" id="printReportBtn">
-                    Print / Save as PDF
-                </button>
+            </section>
 
-            </div>
 
-        </section>
+            <!-- EVENT APPROVALS -->
+            <section id="approvals" class="admin-section admin-panel">
 
-    </main>
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-eyebrow">EVENT MODERATION</span>
+                        <h2>Pending Event Approvals</h2>
+                        <p>
+                            Review events submitted by organisers before
+                            making them available to students.
+                        </p>
+                    </div>
+
+                    <span class="panel-label">ADMIN REVIEW</span>
+                </div>
+
+                <div id="pendingEventsMessage" class="message"></div>
+
+                <div class="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Event</th>
+                                <th>Organiser</th>
+                                <th>Date</th>
+                                <th>Venue</th>
+                                <th>Capacity</th>
+                                <th>Ticket Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="pendingEventsTable">
+                            <tr>
+                                <td colspan="7">
+                                    Loading pending events...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+
+
+            <!-- USER MANAGEMENT -->
+            <section id="users" class="admin-section admin-panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-eyebrow">USER ADMINISTRATION</span>
+                        <h2>User Management</h2>
+                        <p>
+                            Manage registered accounts and assign
+                            system roles.
+                        </p>
+                    </div>
+                </div>
+
+
+                <!-- ADD USER -->
+                <div class="add-user-panel">
+
+                    <div class="add-user-heading">
+                        <div class="add-user-icon">+</div>
+
+                        <div>
+                            <h3>Add New User</h3>
+                            <p>Create an account for a student or organiser.</p>
+                        </div>
+                    </div>
+
+
+                    <form id="addUserForm" class="admin-user-form">
+
+                        <div class="form-field">
+                            <label for="newUserName">Full Name</label>
+                            <input
+                                type="text"
+                                id="newUserName"
+                                placeholder="Enter full name"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="form-field">
+                            <label for="newUserEmail">Email Address</label>
+                            <input
+                                type="email"
+                                id="newUserEmail"
+                                placeholder="Enter email address"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="form-field">
+                            <label for="newUserPassword">Password</label>
+                            <input
+                                type="password"
+                                id="newUserPassword"
+                                placeholder="Minimum 8 characters"
+                                minlength="8"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="form-field">
+                            <label for="newUserRole">Account Role</label>
+
+                            <select id="newUserRole" required>
+                                <option value="student">Student</option>
+                                <option value="organizer">Organizer</option>
+                            </select>
+                        </div>
+
+
+                        <div class="form-action">
+                            <button type="submit" class="admin-primary-btn">
+                                + Add User
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- USERS TABLE -->
+                <div class="table-section-heading">
+                    <div>
+                        <h3>Registered Users</h3>
+                        <p>View and manage existing system accounts.</p>
+                    </div>
+                </div>
+
+                <div class="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role / Manage</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="usersTable">
+                            <tr>
+                                <td colspan="4">Loading users...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+
+
+            <!-- EVENT RECORDS -->
+            <section id="events" class="admin-section admin-panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-eyebrow">PLATFORM ACTIVITIES</span>
+                        <h2>All Events</h2>
+                        <p>Monitor events registered on the platform.</p>
+                    </div>
+                </div>
+
+                <div class="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Event Title</th>
+                                <th>Venue</th>
+                                <th>Event Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="eventsTable">
+                            <tr>
+                                <td colspan="4">Loading events...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+
+
+            <!-- BOOKING RECORDS -->
+            <section id="bookings" class="admin-section admin-panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-eyebrow">TRANSACTION RECORDS</span>
+                        <h2>All Bookings</h2>
+                        <p>Monitor reservations made by students.</p>
+                    </div>
+                </div>
+
+                <div class="table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Student</th>
+                                <th>Event</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="bookingsTable">
+                            <tr>
+                                <td colspan="6">Loading bookings...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+
+
+            <!-- REPORTS -->
+            <section id="reports" class="admin-section admin-panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-eyebrow">SYSTEM ANALYTICS</span>
+                        <h2>System Reports</h2>
+                        <p>
+                            Generate a summary of important platform
+                            statistics and user information.
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="report-intro">
+                    <div class="report-icon">▥</div>
+
+                    <div>
+                        <h3>Generate System Report</h3>
+                        <p>
+                            Create a report showing the current
+                            state of the Campus Events platform.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        id="generateReportBtn"
+                        class="admin-primary-btn"
+                    >
+                        Generate Report
+                    </button>
+                </div>
+
+
+                <div id="reportMessage" class="message"></div>
+
+
+                <!-- GENERATED REPORT -->
+                <div id="reportContainer" hidden>
+
+                    <div id="reportContent" class="generated-report">
+
+                        <div class="report-title">
+                            <span class="section-eyebrow">OFFICIAL REPORT</span>
+                            <h2>Campus Events System Report</h2>
+                            <p id="reportGeneratedAt"></p>
+                        </div>
+
+
+                        <h3>System Summary</h3>
+
+                        <div class="admin-stats-grid report-stats">
+
+                            <div class="admin-stat-card users-stat">
+                                <h3 id="reportTotalUsers">0</h3>
+                                <p>Total Users</p>
+                            </div>
+
+                            <div class="admin-stat-card events-stat">
+                                <h3 id="reportTotalEvents">0</h3>
+                                <p>Total Events</p>
+                            </div>
+
+                            <div class="admin-stat-card bookings-stat">
+                                <h3 id="reportTotalBookings">0</h3>
+                                <p>Total Bookings</p>
+                            </div>
+
+                            <div class="admin-stat-card tickets-stat">
+                                <h3 id="reportTotalTickets">0</h3>
+                                <p>Total Tickets</p>
+                            </div>
+
+                        </div>
+
+
+                        <h3>Users by Role</h3>
+
+                        <div class="table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>User Role</th>
+                                        <th>Total Users</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="reportRolesTable">
+                                    <tr>
+                                        <td colspan="2">
+                                            No report generated yet.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        id="printReportBtn"
+                        class="admin-primary-btn"
+                    >
+                        Print / Save as PDF
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- FOOTER -->
+            <footer class="admin-footer">
+                <span>CampusEvents Management Portal</span>
+                <span>Administrator Dashboard</span>
+            </footer>
+
+        </main>
+
+    </div>
+
 
     <!-- JAVASCRIPT FILES -->
     <script src="js/api.js"></script>

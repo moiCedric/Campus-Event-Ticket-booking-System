@@ -1,242 +1,682 @@
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Organizer Dashboard | Campus Events</title>
+
     <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body data-dashboard="organizer">
+<body data-dashboard="organizer" class="organizer-page">
 
     <nav id="nav"></nav>
 
-    <main class="container">
+    <div class="admin-layout">
 
-        <h1>Organizer Dashboard</h1>
-        <p>Manage your events and monitor ticket bookings.</p>
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
 
-        <!-- STATISTICS -->
-        <section class="stats grid">
-            <div class="card">
-                <h3>My Events</h3>
-                <p id="myEventsCount">Loading...</p>
+            <div class="sidebar-brand">
+                <div class="brand-icon">CE</div>
+
+                <div>
+                    <strong>CampusEvents</strong>
+                    <span>Management Portal</span>
+                </div>
             </div>
 
-            <div class="card">
-                <h3>My Bookings</h3>
-                <p id="myBookingsCount">Loading...</p>
-            </div>
-        </section>
+            <div class="sidebar-label">ORGANIZER MENU</div>
 
-        <div id="msg" class="message"></div>
+            <nav class="sidebar-menu">
 
-        <!-- CREATE EVENT -->
-        <section class="card">
-            <h2>Create New Event</h2>
-            <p>Enter the details of the event you want to organize.</p>
+                <a href="#overview" class="sidebar-link active">
+                    <span class="sidebar-icon">▦</span>
+                    Dashboard
+                </a>
 
-            <form id="createEventForm">
-
-                <label for="title">Event Title</label>
-                <input type="text" id="title" name="title"
-                    placeholder="e.g. Campus Innovation Day"
-                    maxlength="150" required>
-
-                <label for="description">Description</label>
-                <textarea id="description" name="description"
-                    placeholder="Describe your event..."
-                    rows="4"></textarea>
-
-                <label for="category">Category</label>
-                <select id="category" name="category">
-                    <option value="">Select a category</option>
-                    <option value="Academic">Academic</option>
-                    <option value="Technology">Technology</option>
-                    <option value="Music">Music</option>
-                    <option value="Sports">Sports</option>
-                    <option value="Business">Business</option>
-                    <option value="Social">Social</option>
-                    <option value="Other">Other</option>
-                </select>
-
-                <label for="venue">Venue</label>
-                <input type="text" id="venue" name="venue"
-                    placeholder="Enter event venue" maxlength="150">
-
-                <label for="event_date">Event Date and Time</label>
-                <input type="datetime-local" id="event_date"
-                    name="event_date" required>
-
-                <label for="capacity">Ticket Capacity</label>
-                <input type="number" id="capacity" name="capacity"
-                    placeholder="e.g. 200" min="1" step="1" required>
-
-                <label for="ticket_price">Ticket Price (KES)</label>
-                <input type="number" id="ticket_price" name="ticket_price"
-                    placeholder="Enter 0 for free events"
-                    min="0" step="0.01" value="0">
-
-                <button type="submit" id="createEventButton">
+                <a href="#createEvent" class="sidebar-link">
+                    <span class="sidebar-icon">+</span>
                     Create Event
-                </button>
+                </a>
 
-            </form>
-        </section>
+                <a href="#myEvents" class="sidebar-link">
+                    <span class="sidebar-icon">▣</span>
+                    My Events
+                </a>
 
-        <!-- EDIT EVENT -->
-        <section class="card" id="editEventSection" hidden>
-            <h2>Edit Event</h2>
-            <p>Update the details of your selected event.</p>
+                <a href="#verification" class="sidebar-link">
+                    <span class="sidebar-icon">✓</span>
+                    Ticket Verification
+                </a>
 
-            <form id="editEventForm">
+                <a href="#bookings" class="sidebar-link">
+                    <span class="sidebar-icon">▤</span>
+                    Bookings
+                </a>
 
-                <input type="hidden" id="editEventId">
+            </nav>
 
-                <label for="editTitle">Event Title</label>
-                <input type="text" id="editTitle"
-                    maxlength="150" required>
+            <div class="sidebar-bottom">
 
-                <label for="editDescription">Description</label>
-                <textarea id="editDescription" rows="4"></textarea>
+                <div class="sidebar-admin-card">
+                    <div class="admin-avatar">O</div>
 
-                <label for="editCategory">Category</label>
-                <select id="editCategory">
-                    <option value="">Select a category</option>
-                    <option value="Academic">Academic</option>
-                    <option value="Technology">Technology</option>
-                    <option value="Music">Music</option>
-                    <option value="Sports">Sports</option>
-                    <option value="Business">Business</option>
-                    <option value="Social">Social</option>
-                    <option value="Other">Other</option>
-                </select>
+                    <div>
+                        <strong>Event Organiser</strong>
+                        <span>Management Portal</span>
+                    </div>
+                </div>
 
-                <label for="editVenue">Venue</label>
-                <input type="text" id="editVenue" maxlength="150">
-
-                <label for="editDate">Event Date and Time</label>
-                <input type="datetime-local" id="editDate" required>
-
-                <label for="editCapacity">Ticket Capacity</label>
-                <input type="number" id="editCapacity"
-                    min="1" step="1" required>
-
-                <label for="editPrice">Ticket Price (KES)</label>
-                <input type="number" id="editPrice"
-                    min="0" step="0.01" required>
-
-                <button type="submit" id="saveEditButton">
-                    Save Changes
-                </button>
-
-                <button type="button" id="cancelEditButton">
-                    Stop Editing
-                </button>
-
-            </form>
-        </section>
-
-        <!-- MY EVENTS -->
-        <section class="card">
-            <h2>My Events</h2>
-
-            <div class="table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Venue</th>
-                            <th>Date</th>
-                            <th>Capacity</th>
-                            <th>Price</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="organizerEventsTable">
-                        <tr>
-                            <td colspan="7">Loading events...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- TICKET VERIFICATION -->
-        <section class="card">
-            <h2>Ticket Verification</h2>
-            <p>Enter a student's ticket number to verify and check them in.</p>
-
-            <form id="verifyTicketForm">
-
-                <label for="ticketNumber">Ticket Number</label>
-
-                <input
-                    type="text"
-                    id="ticketNumber"
-                    name="ticket_number"
-                    placeholder="e.g. CAMP-XXXXXXXXXX"
-                    required
-                >
-
-                <button type="submit" id="verifyTicketButton">
-                    Verify Ticket
-                </button>
-
-            </form>
-
-            <div id="ticketVerificationResult" class="message"></div>
-        </section>
-
-        <!-- BOOKINGS -->
-        <section class="card">
-            <h2>Bookings for My Events</h2>
-
-            <div class="table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Booking ID</th>
-                            <th>Student</th>
-                            <th>Event</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th>Details</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="organizerBookingsTable">
-                        <tr>
-                            <td colspan="7">Loading bookings...</td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
 
-            <!-- BOOKING DETAILS -->
-            <div id="bookingDetails" class="card" hidden>
-                <h3>Booking Details</h3>
+        </aside>
 
-                <div id="bookingDetailsContent"></div>
 
-                <button type="button" id="closeBookingDetails">
-                    Close Details
-                </button>
-            </div>
+        <!-- MAIN CONTENT -->
+        <main class="admin-content">
 
-        </section>
+            <!-- HEADER -->
+            <header class="admin-topbar">
 
-    </main>
+                <div>
+                    <span class="breadcrumb">Management / Organizer</span>
 
+                    <h1>Organizer Dashboard</h1>
+
+                    <p>
+                        Create events, manage bookings and verify tickets.
+                    </p>
+                </div>
+
+                <div class="topbar-profile">
+                    <div class="topbar-avatar">O</div>
+
+                    <div>
+                        <strong>Event Organiser</strong>
+                        <span>Organizer Account</span>
+                    </div>
+                </div>
+
+            </header>
+
+
+            <!-- GLOBAL MESSAGES -->
+            <div id="msg" class="message"></div>
+
+
+            <!-- OVERVIEW -->
+            <section id="overview" class="admin-section">
+
+                <div class="section-heading">
+
+                    <div>
+                        <span class="section-eyebrow">OVERVIEW</span>
+
+                        <h2>Your Event Statistics</h2>
+
+                        <p>
+                            Monitor the performance of your events.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="admin-stats-grid">
+
+                    <div class="admin-stat-card users-stat">
+
+                        <div class="stat-top">
+                            <span class="stat-icon">▣</span>
+                            <span class="stat-caption">Your activities</span>
+                        </div>
+
+                        <h3 id="myEventsCount">Loading...</h3>
+
+                        <p>My Events</p>
+
+                    </div>
+
+
+                    <div class="admin-stat-card bookings-stat">
+
+                        <div class="stat-top">
+                            <span class="stat-icon">▤</span>
+                            <span class="stat-caption">Student reservations</span>
+                        </div>
+
+                        <h3 id="myBookingsCount">Loading...</h3>
+
+                        <p>My Bookings</p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- CREATE EVENT -->
+            <section id="createEvent" class="admin-section admin-panel">
+
+                <div class="panel-heading">
+
+                    <div>
+                        <span class="section-eyebrow">EVENT MANAGEMENT</span>
+
+                        <h2>Create New Event</h2>
+
+                        <p>
+                            Provide the details of the event you want to organise.
+                        </p>
+                    </div>
+
+                    <span class="panel-label">NEW EVENT</span>
+
+                </div>
+
+
+                <div class="organizer-form-panel">
+
+                    <div class="add-user-heading">
+
+                        <div class="add-user-icon">+</div>
+
+                        <div>
+                            <h3>Event Information</h3>
+
+                            <p>
+                                Complete the fields below to submit your event.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <form id="createEventForm" class="organizer-form">
+
+                        <div class="form-field">
+                            <label for="title">Event Title</label>
+
+                            <input
+                                type="text"
+                                id="title"
+                                name="title"
+                                placeholder="e.g. Campus Innovation Day"
+                                maxlength="150"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="form-field">
+                            <label for="category">Category</label>
+
+                            <select id="category" name="category">
+
+                                <option value="">Select a category</option>
+                                <option value="Academic">Academic</option>
+                                <option value="Technology">Technology</option>
+                                <option value="Music">Music</option>
+                                <option value="Sports">Sports</option>
+                                <option value="Business">Business</option>
+                                <option value="Social">Social</option>
+                                <option value="Other">Other</option>
+
+                            </select>
+                        </div>
+
+
+                        <div class="form-field full-width">
+                            <label for="description">Event Description</label>
+
+                            <textarea
+                                id="description"
+                                name="description"
+                                placeholder="Describe your event..."
+                                rows="4"
+                            ></textarea>
+                        </div>
+
+
+                        <div class="form-field">
+                            <label for="venue">Venue</label>
+
+                            <input
+                                type="text"
+                                id="venue"
+                                name="venue"
+                                placeholder="Enter event venue"
+                                maxlength="150"
+                            >
+                        </div>
+
+
+                        <div class="form-field">
+                            <label for="event_date">Event Date and Time</label>
+
+                            <input
+                                type="datetime-local"
+                                id="event_date"
+                                name="event_date"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="form-field">
+                            <label for="capacity">Ticket Capacity</label>
+
+                            <input
+                                type="number"
+                                id="capacity"
+                                name="capacity"
+                                placeholder="e.g. 200"
+                                min="1"
+                                step="1"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="form-field">
+                            <label for="ticket_price">Ticket Price (KES)</label>
+
+                            <input
+                                type="number"
+                                id="ticket_price"
+                                name="ticket_price"
+                                placeholder="Enter 0 for free events"
+                                min="0"
+                                step="0.01"
+                                value="0"
+                            >
+                        </div>
+
+
+                        <div class="form-action full-width">
+
+                            <button
+                                type="submit"
+                                id="createEventButton"
+                                class="admin-primary-btn"
+                            >
+                                + Create Event
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+
+            <!-- EDIT EVENT -->
+            <section
+                id="editEventSection"
+                class="admin-section admin-panel"
+                hidden
+            >
+
+                <div class="panel-heading">
+
+                    <div>
+                        <span class="section-eyebrow">EVENT MANAGEMENT</span>
+
+                        <h2>Edit Event</h2>
+
+                        <p>
+                            Update the information of your selected event.
+                        </p>
+                    </div>
+
+                    <span class="panel-label">EDIT MODE</span>
+
+                </div>
+
+
+                <div class="organizer-form-panel">
+
+                    <form id="editEventForm" class="organizer-form">
+
+                        <input type="hidden" id="editEventId">
+
+
+                        <div class="form-field">
+                            <label for="editTitle">Event Title</label>
+
+                            <input
+                                type="text"
+                                id="editTitle"
+                                maxlength="150"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="form-field">
+                            <label for="editCategory">Category</label>
+
+                            <select id="editCategory">
+
+                                <option value="">Select a category</option>
+                                <option value="Academic">Academic</option>
+                                <option value="Technology">Technology</option>
+                                <option value="Music">Music</option>
+                                <option value="Sports">Sports</option>
+                                <option value="Business">Business</option>
+                                <option value="Social">Social</option>
+                                <option value="Other">Other</option>
+
+                            </select>
+                        </div>
+
+
+                        <div class="form-field full-width">
+                            <label for="editDescription">Description</label>
+
+                            <textarea
+                                id="editDescription"
+                                rows="4"
+                            ></textarea>
+                        </div>
+
+
+                        <div class="form-field">
+                            <label for="editVenue">Venue</label>
+
+                            <input
+                                type="text"
+                                id="editVenue"
+                                maxlength="150"
+                            >
+                        </div>
+
+
+                        <div class="form-field">
+                            <label for="editDate">Event Date and Time</label>
+
+                            <input
+                                type="datetime-local"
+                                id="editDate"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="form-field">
+                            <label for="editCapacity">Ticket Capacity</label>
+
+                            <input
+                                type="number"
+                                id="editCapacity"
+                                min="1"
+                                step="1"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="form-field">
+                            <label for="editPrice">Ticket Price (KES)</label>
+
+                            <input
+                                type="number"
+                                id="editPrice"
+                                min="0"
+                                step="0.01"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="form-action full-width">
+
+                            <button
+                                type="submit"
+                                id="saveEditButton"
+                                class="admin-primary-btn"
+                            >
+                                Save Changes
+                            </button>
+
+                            <button
+                                type="button"
+                                id="cancelEditButton"
+                                class="organizer-secondary-btn"
+                            >
+                                Stop Editing
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+
+            <!-- MY EVENTS -->
+            <section id="myEvents" class="admin-section admin-panel">
+
+                <div class="panel-heading">
+
+                    <div>
+                        <span class="section-eyebrow">YOUR ACTIVITIES</span>
+
+                        <h2>My Events</h2>
+
+                        <p>
+                            View, update and manage your submitted events.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="table">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Event Title</th>
+                                <th>Venue</th>
+                                <th>Date</th>
+                                <th>Capacity</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+
+                        <tbody id="organizerEventsTable">
+
+                            <tr>
+                                <td colspan="7">Loading events...</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- TICKET VERIFICATION -->
+            <section id="verification" class="admin-section admin-panel">
+
+                <div class="panel-heading">
+
+                    <div>
+                        <span class="section-eyebrow">ENTRY MANAGEMENT</span>
+
+                        <h2>Ticket Verification</h2>
+
+                        <p>
+                            Verify student tickets and manage event check-ins.
+                        </p>
+                    </div>
+
+                    <span class="panel-label">TICKET CONTROL</span>
+
+                </div>
+
+
+                <div class="verification-panel">
+
+                    <div class="verification-icon">✓</div>
+
+                    <div class="verification-content">
+
+                        <h3>Verify a Ticket</h3>
+
+                        <p>
+                            Enter the ticket number provided by the student.
+                        </p>
+
+                        <form id="verifyTicketForm" class="verification-form">
+
+                            <div class="form-field">
+                                <label for="ticketNumber">Ticket Number</label>
+
+                                <input
+                                    type="text"
+                                    id="ticketNumber"
+                                    name="ticket_number"
+                                    placeholder="e.g. CAMP-XXXXXXXXXX"
+                                    required
+                                >
+                            </div>
+
+
+                            <button
+                                type="submit"
+                                id="verifyTicketButton"
+                                class="admin-primary-btn"
+                            >
+                                Verify Ticket
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="ticketVerificationResult"
+                    class="message"
+                ></div>
+
+            </section>
+
+
+            <!-- BOOKINGS -->
+            <section id="bookings" class="admin-section admin-panel">
+
+                <div class="panel-heading">
+
+                    <div>
+                        <span class="section-eyebrow">BOOKING MANAGEMENT</span>
+
+                        <h2>Bookings for My Events</h2>
+
+                        <p>
+                            Monitor student reservations for your events.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="table">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Student</th>
+                                <th>Event</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+
+
+                        <tbody id="organizerBookingsTable">
+
+                            <tr>
+                                <td colspan="7">Loading bookings...</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- BOOKING DETAILS -->
+                <div id="bookingDetails" class="booking-details-panel" hidden>
+
+                    <div class="booking-details-heading">
+
+                        <div>
+                            <span class="section-eyebrow">RESERVATION INFORMATION</span>
+
+                            <h3>Booking Details</h3>
+                        </div>
+
+                        <button
+                            type="button"
+                            id="closeBookingDetails"
+                            class="organizer-secondary-btn"
+                        >
+                            Close Details
+                        </button>
+
+                    </div>
+
+
+                    <div id="bookingDetailsContent"></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- FOOTER -->
+            <footer class="admin-footer">
+
+                <span>CampusEvents Management Portal</span>
+
+                <span>Organizer Dashboard</span>
+
+            </footer>
+
+        </main>
+
+    </div>
+
+
+    <!-- JAVASCRIPT -->
     <script src="js/api.js"></script>
     <script src="js/dashboard.js"></script>
 
 </body>
 </html>
-
-
-
-
