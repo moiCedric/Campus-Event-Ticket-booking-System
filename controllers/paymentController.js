@@ -1,9 +1,7 @@
-// Generate e-tickets once Part 6 (models/Ticket) is merged
-try {
+const Ticket = require ("../models/Ticket");
   const Ticket = require("../models/Ticket");
   await Ticket.generateForBooking(booking.id);
-} catch (err) {
+   (err) 
   if (err.code !== "MODULE_NOT_FOUND") {
     throw err;
   }
-}
