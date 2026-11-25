@@ -21,8 +21,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/api/auth", authRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/bookings", bookingRoutes);
-app.use("/api/admin", adminRoutes);
-app.use("/api/organizer", organizerRoutes);
+
 
 // API homepage
 app.get("/", (req, res) => {
