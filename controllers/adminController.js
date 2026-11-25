@@ -79,7 +79,6 @@ async function generateReport(req, res) {
 
   } catch (err) {
     console.error("Generate report error:", err);
-
     res.status(500).json({
       error: "Could not generate report"
     });
@@ -266,7 +265,6 @@ async function removeUser(req, res) {
 
   } catch (err) {
     console.error("Admin remove user error:", err);
-
     res.status(500).json({
       error: "Could not remove user"
     });
@@ -284,6 +282,102 @@ async function listEvents(req, res) {
     console.error(err);
     res.status(500).json({
       error: "Could not fetch events"
+    });
+  }
+}
+
+// LIST EVENTS WAITING FOR ADMIN APPROVAL
+async function listPendingEvents(req, res) {
+  try {
+    const [events] = await pool.query(
+      `SELECT events.*, users.name AS organizer_name,
+              users.email AS organizer_email
+       FROM events
+       LEFT JOIN users ON events.organizer_id = users.id
+       WHERE events.approval_status = 'pending'
+       ORDER BY events.created_at DESC`
+    );
+
+    res.json(events);
+
+  } catch (err) {
+    console.error("List pending events error:", err);
+    res.status(500).json({
+      error: "Could not fetch pending events"
+    });
+  }
+}
+
+// APPROVE EVENT
+async function approveEvent(req, res) {
+  try {
+    const eventId = Number(req.params.id);
+
+    if (!Number.isInteger(eventId) || eventId <= 0) {
+      return res.status(400).json({
+        error: "Invalid event ID"
+      });
+    }
+
+    const [result] = await pool.query(
+      `UPDATE events
+       SET approval_status = 'approved'
+       WHERE id = ?
+       AND approval_status = 'pending'`,
+      [eventId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        error: "Pending event not found or already reviewed"
+      });
+    }
+
+    res.json({
+      message: "Event approved successfully"
+    });
+
+  } catch (err) {
+    console.error("Approve event error:", err);
+    res.status(500).json({
+      error: "Could not approve event"
+    });
+  }
+}
+
+// REJECT EVENT
+async function rejectEvent(req, res) {
+  try {
+    const eventId = Number(req.params.id);
+
+    if (!Number.isInteger(eventId) || eventId <= 0) {
+      return res.status(400).json({
+        error: "Invalid event ID"
+      });
+    }
+
+    const [result] = await pool.query(
+      `UPDATE events
+       SET approval_status = 'rejected'
+       WHERE id = ?
+       AND approval_status = 'pending'`,
+      [eventId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        error: "Pending event not found or already reviewed"
+      });
+    }
+
+    res.json({
+      message: "Event rejected successfully"
+    });
+
+  } catch (err) {
+    console.error("Reject event error:", err);
+    res.status(500).json({
+      error: "Could not reject event"
     });
   }
 }
@@ -309,5 +403,8 @@ module.exports = {
   updateUserRole,
   removeUser,
   listEvents,
+  listPendingEvents,
+  approveEvent,
+  rejectEvent,
   listBookings
 };

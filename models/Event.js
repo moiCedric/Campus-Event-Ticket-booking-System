@@ -15,8 +15,8 @@ async function createEvent(organizerId, data) {
   const [result] = await pool.query(
     `INSERT INTO events
      (organizer_id, title, description, category, venue,
-      event_date, capacity, ticket_price)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      event_date, capacity, ticket_price, approval_status)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
     [
       organizerId,
       title,
@@ -52,6 +52,7 @@ async function listEvents({
 
   if (onlyPublished) {
     conditions.push("status = 'published'");
+    conditions.push("approval_status = 'approved'");
   }
 
   if (category) {

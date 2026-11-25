@@ -590,6 +590,151 @@ function setupAdminReports() {
 
 
 // ===============================
+// ADMIN EVENT APPROVALS
+// ===============================
+
+async function loadPendingEvents() {
+    const table = document.getElementById("pendingEventsTable");
+    const message = document.getElementById("pendingEventsMessage");
+
+    if (!table) return;
+
+    try {
+        table.innerHTML = `
+            <tr>
+                <td colspan="7">Loading pending events...</td>
+            </tr>
+        `;
+
+        const response = await api("/admin/events/pending");
+        const events = getArray(response);
+
+        if (events.length === 0) {
+            table.innerHTML = `
+                <tr>
+                    <td colspan="7">
+                        No events are currently waiting for approval.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        table.innerHTML = events.map(event => `
+            <tr>
+                <td>${escapeHTML(event.title)}</td>
+
+                <td>
+                    ${escapeHTML(event.organizer_name || "Unknown")}
+                    <br>
+                    ${escapeHTML(event.organizer_email || "")}
+                </td>
+
+                <td>${formatDate(event.event_date)}</td>
+
+                <td>${escapeHTML(event.venue || "Not specified")}</td>
+
+                <td>${escapeHTML(event.capacity)}</td>
+
+                <td>${formatMoney(event.ticket_price)}</td>
+
+                <td>
+                    <button
+                        type="button"
+                        class="approve-event-button"
+                        data-id="${escapeHTML(event.id)}">
+                        Approve
+                    </button>
+
+                    <button
+                        type="button"
+                        class="reject-event-button"
+                        data-id="${escapeHTML(event.id)}">
+                        Reject
+                    </button>
+                </td>
+            </tr>
+        `).join("");
+
+        if (message) {
+            message.textContent = "";
+        }
+
+    } catch (error) {
+        console.error("Load pending events error:", error);
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="7">
+                    Could not load pending events.
+                </td>
+            </tr>
+        `;
+
+        if (message) {
+            message.textContent = error.message;
+            message.style.color = "#b91c1c";
+        }
+    }
+}
+
+
+function setupAdminEventApprovals() {
+    const table = document.getElementById("pendingEventsTable");
+
+    if (!table) return;
+
+    table.addEventListener("click", async function (e) {
+
+        const approveButton = e.target.closest(".approve-event-button");
+        const rejectButton = e.target.closest(".reject-event-button");
+
+        if (!approveButton && !rejectButton) return;
+
+        const button = approveButton || rejectButton;
+        const eventId = button.dataset.id;
+
+        const action = approveButton ? "approve" : "reject";
+
+        const confirmed = confirm(
+            `Are you sure you want to ${action} this event?`
+        );
+
+        if (!confirmed) return;
+
+        try {
+            button.disabled = true;
+            button.textContent = "Processing...";
+
+            const response = await api(
+                `/admin/events/${eventId}/${action}`,
+                "PATCH"
+            );
+
+            showDashboardMessage(
+                response.message ||
+                `Event ${action === "approve" ? "approved" : "rejected"} successfully!`,
+                false
+            );
+
+            await loadPendingEvents();
+            await loadAdminDashboard();
+
+        } catch (error) {
+            console.error("Event approval error:", error);
+
+            showDashboardMessage(error.message);
+
+            button.disabled = false;
+            button.textContent = action === "approve"
+                ? "Approve"
+                : "Reject";
+        }
+    });
+}
+
+
+// ===============================
 // CREATE EVENT
 // ===============================
 
@@ -1350,7 +1495,11 @@ document.addEventListener("DOMContentLoaded", function () {
         setupAdminAddUserForm();
         setupAdminReports();
 
+        // NEW: Event approval functionality
+        setupAdminEventApprovals();
+
         loadAdminDashboard();
+        loadPendingEvents();
     }
 
     if (dashboard === "organizer") {

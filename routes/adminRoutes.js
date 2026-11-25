@@ -17,6 +17,11 @@ router.post("/users", adminController.createUser);
 router.patch("/users/:id/role", adminController.updateUserRole);
 router.delete("/users/:id", adminController.removeUser);
 
+// Event approval
+router.get("/events/pending", adminController.listPendingEvents);
+router.patch("/events/:id/approve", adminController.approveEvent);
+router.patch("/events/:id/reject", adminController.rejectEvent);
+
 // Event and booking records
 router.get("/events", adminController.listEvents);
 router.get("/bookings", adminController.listBookings);
@@ -25,4 +30,3 @@ router.get("/bookings", adminController.listBookings);
 router.get("/reports", adminController.generateReport);
 
 module.exports = router;
-

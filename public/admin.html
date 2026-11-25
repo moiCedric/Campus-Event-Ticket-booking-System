@@ -51,6 +51,50 @@
         <!-- DASHBOARD MESSAGES -->
         <div id="msg" class="message"></div>
 
+        <!-- PENDING EVENT APPROVALS -->
+        <section class="card" id="pendingApprovalsSection">
+
+            <h2>Pending Event Approvals</h2>
+
+            <p>
+                Review events submitted by organisers before making
+                them available to students.
+            </p>
+
+            <div id="pendingEventsMessage" class="message"></div>
+
+            <div class="table">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Organiser</th>
+                            <th>Date</th>
+                            <th>Venue</th>
+                            <th>Capacity</th>
+                            <th>Ticket Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="pendingEventsTable">
+
+                        <tr>
+                            <td colspan="7">
+                                Loading pending events...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
         <!-- USER MANAGEMENT -->
         <section class="card">
 
@@ -300,4 +344,3 @@
 
 </body>
 </html>
-
