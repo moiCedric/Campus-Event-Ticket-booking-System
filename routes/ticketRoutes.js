@@ -10,5 +10,10 @@ router.post(
   requireRole("organizer", "admin"),
   ticketController.checkIn
 );
-
+router.get(
+  "/event/:eventId",
+  requireAuth,
+  requireRole("organizer", "admin"),
+  ticketController.listForEvent
+);
 module.exports = router;
