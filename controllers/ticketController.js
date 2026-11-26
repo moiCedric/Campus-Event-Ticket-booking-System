@@ -13,9 +13,12 @@ exports.listMine = async (req, res) => {
 
 exports.checkIn = async (req, res) => {
   try {
-    const { qr_code } = req.body;
+        const qr_code =
+      typeof req.body.qr_code === "string" ? req.body.qr_code.trim() : "";
     if (!qr_code) {
-      return res.status(400).json({ error: "qr_code is required" });
+      return res
+        .status(400)
+        .json({ error: "qr_code is required and must be text" });
     }
 
     const ticket = await Ticket.getTicketByQr(qr_code);
