@@ -68,8 +68,30 @@ async function markCheckedIn(qrCode) {
   );
   return result.affectedRows === 1;
 }
+// Who organizes this event (null if the event does not exist)
+async function getEventOrganizerId(eventId) {
+  const [rows] = await pool.query(
+    "SELECT organizer_id FROM events WHERE id = ?",
+    [eventId]
+  );
+  return rows[0] ? rows[0].organizer_id : null;
+}
 
-module.exports = {
+// Every ticket for an event, with the attendee, for the door list
+async function getTicketsByEvent(eventId) {
+  const [rows] = await pool.query(
+    `SELECT t.id, t.qr_code, t.is_checked_in, t.checked_in_at,
+            b.id AS booking_id, u.name AS attendee_name, u.email AS attendee_email
+     FROM tickets t
+     JOIN bookings b ON t.booking_id = b.id
+     JOIN users u ON b.user_id = u.id
+     WHERE b.event_id = ?
+     ORDER BY t.id`,
+    [eventId]
+  );
+  return rows;
+}
+ module.exports = {
   generateForBooking,
   getTicketsByUser,
   getTicketByQr,
