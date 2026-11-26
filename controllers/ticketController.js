@@ -46,3 +46,35 @@ exports.checkIn = async (req, res) => {
     res.status(500).json({ error: "Check-in failed" });
   }
 };
+exports.listForEvent = async (req, res) => {
+  try {
+    const eventId = Number(req.params.eventId);
+    if (!Number.isInteger(eventId)) {
+      return res.status(400).json({ error: "eventId must be a number" });
+    }
+
+    const organizerId = await Ticket.getEventOrganizerId(eventId);
+    if (organizerId === null) {
+      return res.status(404).json({ error: "Event not found" });
+    }
+
+    // Organizers can only see tickets for their own events
+    if (req.user.role === "organizer" && organizerId !== req.user.id) {
+      return res
+        .status(403)
+        .json({ error: "This is another organizer's event" });
+    }
+
+    const tickets = await Ticket.getTicketsByEvent(eventId);
+    const checkedIn = tickets.filter((t) => t.is_checked_in).length;
+    res.json({
+      event_id: eventId,
+      total: tickets.length,
+      checked_in: checkedIn,
+      tickets,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Could not load tickets for this event" });
+  }
+};
